@@ -8,7 +8,7 @@ const port = process.env.PORT || 3000;
 
 // assignment_project
 // TMBbQkamBU6oGFTF
-const allowedSides = ["http://localhost:5173", "https://b11a10.web.app"];
+const allowedSides = ["http://localhost:5173", "https://my-portfolio-website-client.web.app"];
 
 app.use(
   cors({
@@ -34,7 +34,7 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+    // await client.connect();
 
     const projectCollection = client.db("projectDB").collection("project");
 
@@ -86,8 +86,25 @@ async function run() {
       }
     });
 
+    app.put("/projects/:id", async (req, res) => {
+      const { id } = req.params;
+      const updatedProject = req.body;
+      console.log("Updating project with ID:", id);
+      console.log("Payload:", updatedProject);
+
+      try {
+        const result = await projectCollection.updateOne(
+          { _id: new ObjectId(id) },
+          { $set: updatedProject }
+        );
+        res.send(result);
+      } catch (err) {
+        // res.status(500).send({ error: "Failed to update project" });
+      }
+    });
+
     // Send a ping to confirm a successful connection
-    await client.db("admin").command({ ping: 1 });
+    // await client.db("admin").command({ ping: 1 });
     console.log(
       "Pinged your deployment. You successfully connected to MongoDB!"
     );
