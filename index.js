@@ -36,7 +36,9 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     // await client.connect();
 
-    const projectCollection = client.db("projectDB").collection("project");
+    const projectCollection = client.db("portfolioDB").collection("projects");
+    const massageCollection = client.db("portfolioDB").collection("massage");
+
 
     app.post("/projects", async (req, res) => {
       try {
@@ -85,6 +87,16 @@ async function run() {
         res.status(500).json({ error: "Failed to fetch project" });
       }
     });
+
+    app.post("/massage", async (req, res) => {
+      const formData = req.body
+      try {
+        const result = await massageCollection.insertOne(formData);
+        res.send(result)
+      } catch (error) {
+        res.status(500).json({ error: "Failed to post massage" });
+      }
+    })
 
     app.put("/projects/:id", async (req, res) => {
       const { id } = req.params;
